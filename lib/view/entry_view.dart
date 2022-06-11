@@ -7,8 +7,9 @@ import '../model/easyloadin_show_state.dart';
 
 TextEditingController _controllerUserName = TextEditingController();
 TextEditingController _controllerPassword = TextEditingController();
-bool _isCurrent = false;
+//bool _isCurrent = false;
 EntryViewModel entryViewModel = EntryViewModel();
+var formKey = GlobalKey<FormState>();
 
 class EntryView extends StatefulWidget {
   const EntryView({Key? key}) : super(key: key);
@@ -31,20 +32,24 @@ class _EntryViewState extends State<EntryView> {
         backgroundColor: Theme.of(context).backgroundColor,
         title: titleAppBar(context),
       ),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 50),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              userNameTextField(),
-              SizedBox(height: 25),
-              passwordTextField(),
-              Row(children: [
-                btnRegister(),
-                btnLogin(),
-              ]),
-            ],
+      body: Form(
+        key: formKey,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 50, vertical: 50),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                userNameTextFormField(),
+                SizedBox(height: 25),
+                passwordTextFormField(),
+                SizedBox(height: 20),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                  btnRegister(),
+                  btnLogin(),
+                ]),
+              ],
+            ),
           ),
         ),
       ),
@@ -65,11 +70,11 @@ class _EntryViewState extends State<EntryView> {
   }
 
 // USER NAME BİLGİSİNİN ALINDIĞI TEXTFİELD
-  Widget userNameTextField() {
+  Widget userNameTextFormField() {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       height: 50,
-      child: TextField(
+      child: TextFormField(
         controller: _controllerUserName,
         decoration: InputDecoration(
           border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
@@ -78,16 +83,22 @@ class _EntryViewState extends State<EntryView> {
             color: Theme.of(context).primaryColor,
           ),
         ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Lütfen kullanıcı adı giriniz';
+          }
+          return null;
+        },
       ),
     );
   }
 
 // PASSWORD BİLGİSİNİN ALINDIĞI TEXTFİELD
-  Widget passwordTextField() {
+  Widget passwordTextFormField() {
     return SizedBox(
       width: MediaQuery.of(context).size.width * 0.8,
       height: 50,
-      child: TextField(
+      child: TextFormField(
         controller: _controllerPassword,
         decoration: InputDecoration(
           border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
@@ -96,45 +107,71 @@ class _EntryViewState extends State<EntryView> {
             color: Theme.of(context).primaryColor,
           ),
         ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Lütfen şifre giriniz';
+          }
+          return null;
+        },
       ),
     );
   }
 
   // KAYIT OL BUTONU
   btnRegister() {
-    return ElevatedButton(
+    return SizedBox(
+      width: 90,
+      height: 40,
+      child: ElevatedButton(
+        child: Text('Kayıt Ol'),
+        style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.grey.shade800)),
         onPressed: () async {
-          bool result = await userCheck();
-          if (!result) {
-            Utility.getEasyLoading(
-                showSate: EasyLoadingShowState.showInfo, miliSeconds: 1000, expression: 'Kullanıcı kaydı başarılı.');
-            _controllerUserName.text = '';
-            _controllerPassword.text = '';
-          } else {
-            Utility.getEasyLoading(
-                showSate: EasyLoadingShowState.showInfo, miliSeconds: 1000, expression: 'Kullanıcı zaten kayıtlı!');
-            _controllerUserName.text = '';
-            _controllerPassword.text = '';
+          if (formKey.currentState!.validate()) {
+            bool result = await userCheck();
+            print('registerdan gelen result: $result');
+            if (!result) {
+              var sonuc = await entryViewModel
+                  .addUser(User(userName: _controllerUserName.text, password: _controllerPassword.text));
+              print('kayıt işleminden gelen sonuc : $sonuc');
+
+              String value = sonuc > 0 ? 'Kullanıcı kaydı başarılı.' : 'Kullanıcı kaydı başarısız.';
+              Utility.getEasyLoading(showSate: EasyLoadingShowState.showInfo, miliSeconds: 2000, expression: value);
+              _controllerUserName.text = '';
+              _controllerPassword.text = '';
+            } else {
+              Utility.getEasyLoading(
+                  showSate: EasyLoadingShowState.showInfo, miliSeconds: 1000, expression: 'Kullanıcı zaten kayıtlı!');
+              _controllerUserName.text = '';
+              _controllerPassword.text = '';
+            }
           }
         },
-        child: Text('Kayıt Ol'));
+      ),
+    );
   }
 
   btnLogin() {
-    return ElevatedButton(
-      child: Text('Giriş'),
-      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.grey.shade800)),
-      onPressed: () async {
-        bool result = await userCheck();
-
-        if (result) {
-          Utility.getEasyLoading(miliSeconds: 1000, showSate: EasyLoadingShowState.showDefault, expression: '');
-          Navigator.pushReplacementNamed(context, '/home');
-        } else {
-          Utility.getEasyLoading(
-              showSate: EasyLoadingShowState.showInfo, miliSeconds: 1000, expression: 'Kullanıcı bulunamadı.');
-        }
-      },
+    return SizedBox(
+      width: 90,
+      height: 40,
+      child: ElevatedButton(
+        child: Text('Giriş'),
+        style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.grey.shade800)),
+        onPressed: () async {
+          if (formKey.currentState!.validate()) {
+            bool result = await userCheck();
+            if (result) {
+              Utility.getEasyLoading(miliSeconds: 1000, showSate: EasyLoadingShowState.showDefault, expression: '');
+              Navigator.pushReplacementNamed(context, '/home');
+            } else {
+              Utility.getEasyLoading(
+                  showSate: EasyLoadingShowState.showInfo,
+                  miliSeconds: 1000,
+                  expression: 'Kullanıcı adı veya şifre yanlış!');
+            }
+          }
+        },
+      ),
     );
   }
 

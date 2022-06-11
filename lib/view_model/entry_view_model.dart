@@ -7,15 +7,14 @@ class EntryViewModel {
     return result.isNotEmpty ? true : false;
   }
 
-  Future<bool> addUser(User user) async {
+  Future<int> addUser(User user) async {
     var result = await DbHelper().addUser(user);
-    return result is bool;
+    return result;
   }
 
   Future<bool> login(String userName, String password) async {
-    bool result = await DbHelper().login(userName, password).then((value) {
-      return value;
-    });
+    bool result = await DbHelper().login(userName, password);
+    print('entryModel den gelen result : $result');
     return result;
   }
 

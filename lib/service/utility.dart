@@ -21,8 +21,7 @@ mixin Utility {
         EasyLoading.dismiss();
         break;
       case EasyLoadingShowState.showInfo:
-        EasyLoading.showInfo('Kullanıcı Bulunamadı.',
-            duration: Duration(milliseconds: miliSeconds), dismissOnTap: false);
+        EasyLoading.showInfo(expression, duration: Duration(milliseconds: miliSeconds), dismissOnTap: false);
         break;
       default:
     }

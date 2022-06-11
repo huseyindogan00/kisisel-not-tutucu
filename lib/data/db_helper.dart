@@ -7,7 +7,7 @@ import 'package:to_do_app/model/table_enum.dart';
 import 'package:to_do_app/model/user.dart';
 
 class DbHelper {
-  final Map<String, String> _dbInfo = {'dbName': 'works2.db'};
+  final Map<String, String> _dbInfo = {'dbName': 'works3.db'};
   Database? _database;
   //DbHelper? _dbHelper;
 
@@ -28,7 +28,7 @@ class DbHelper {
   Future<Database?> _initializeDatabase() async {
     String filePath = await getDatabasesPath();
     String dbPath = join(filePath, _dbInfo['dbName']);
-    var dbWork = await openDatabase(dbPath, version: 2, onCreate: _createTable);
+    var dbWork = await openDatabase(dbPath, version: 1, onCreate: _createTable);
     return dbWork;
   }
 
@@ -70,16 +70,14 @@ class DbHelper {
     print(job.content);
     print(job.creationDate);
     print(job.toMap());
-    int result = await db!
-        .update('job', job.toMap(), where: 'id=?', whereArgs: [job.id]);
+    int result = await db!.update('job', job.toMap(), where: 'id=?', whereArgs: [job.id]);
     return result;
   }
 
   Future<int> updateJobState(int id, int jobState) async {
     Database? db = await this.db;
     var stateMap = {'jobState': jobState};
-    int result =
-        await db!.update('job', stateMap, where: 'id=?', whereArgs: [id]);
+    int result = await db!.update('job', stateMap, where: 'id=?', whereArgs: [id]);
     return result;
   }
 
@@ -91,7 +89,7 @@ class DbHelper {
 
   Future<int> addUser(User user) async {
     Database? db = await this.db;
-    int result = await db!.insert(TableEnum.job.name, user.toMap(user));
+    int result = await db!.insert(TableEnum.user.name, user.toMap(user));
     return result;
   }
 
@@ -105,8 +103,9 @@ class DbHelper {
   Future<bool> login(String userName, String password) async {
     Database? db = await this.db;
     List<String> arguments = [userName.trim(), password.trim()];
-    List<Map<String, dynamic>> result = await db!.rawQuery(
-        'SELECT * FROM user WHERE userName=? and password=?', arguments);
+    List<Map<String, dynamic>> result =
+        await db!.rawQuery('SELECT * FROM user WHERE userName=? and password=?', arguments);
+    print('loginden gelen result : $result');
     return result.isNotEmpty ? true : false;
   }
 }
