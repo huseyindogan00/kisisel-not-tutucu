@@ -1,0 +1,1 @@
+enum TableEnum { job, user }
