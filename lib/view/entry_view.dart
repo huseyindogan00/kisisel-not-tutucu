@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables, prefer_final_fields
 import 'package:flutter/material.dart';
+import 'package:to_do_app/model/user.dart';
 import 'package:to_do_app/service/utility.dart';
 import 'package:to_do_app/view_model/entry_view_model.dart';
 import '../model/easyloadin_show_state.dart';
@@ -99,8 +100,24 @@ class _EntryViewState extends State<EntryView> {
     );
   }
 
+  // KAYIT OL BUTONU
   btnRegister() {
-    return ElevatedButton(onPressed: () {}, child: Text('Kayıt Ol'));
+    return ElevatedButton(
+        onPressed: () async {
+          bool result = await userCheck();
+          if (!result) {
+            Utility.getEasyLoading(
+                showSate: EasyLoadingShowState.showInfo, miliSeconds: 1000, expression: 'Kullanıcı kaydı başarılı.');
+            _controllerUserName.text = '';
+            _controllerPassword.text = '';
+          } else {
+            Utility.getEasyLoading(
+                showSate: EasyLoadingShowState.showInfo, miliSeconds: 1000, expression: 'Kullanıcı zaten kayıtlı!');
+            _controllerUserName.text = '';
+            _controllerPassword.text = '';
+          }
+        },
+        child: Text('Kayıt Ol'));
   }
 
   btnLogin() {
@@ -108,19 +125,22 @@ class _EntryViewState extends State<EntryView> {
       child: Text('Giriş'),
       style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.grey.shade800)),
       onPressed: () async {
-        // KAYITLI BİR USER VARSA GİRİŞ YAP
-        bool result = await entryViewModel.login(_controllerUserName.text, _controllerPassword.text).then((value) {
-          return value;
-        });
+        bool result = await userCheck();
+
         if (result) {
-          Utility.getEasyLoading(miliSeconds: 1500, showSate: EasyLoadingShowState.showDefault);
+          Utility.getEasyLoading(miliSeconds: 1000, showSate: EasyLoadingShowState.showDefault, expression: '');
           Navigator.pushReplacementNamed(context, '/home');
         } else {
-          Utility.getEasyLoading(showSate: EasyLoadingShowState.showInfo, miliSeconds: 1000);
+          Utility.getEasyLoading(
+              showSate: EasyLoadingShowState.showInfo, miliSeconds: 1000, expression: 'Kullanıcı bulunamadı.');
         }
       },
     );
   }
-}
 
-// BUTONUN USER OLUP OLMAMASINA GÖRE YAZILDIĞI YER
+  // KAYITLI BİR USER OLUP OLMADIĞINI DÖNER
+  Future<bool> userCheck() async {
+    bool result = await entryViewModel.login(_controllerUserName.text, _controllerPassword.text);
+    return result;
+  }
+}
