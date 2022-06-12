@@ -161,7 +161,8 @@ class _EntryViewState extends State<EntryView> {
           if (formKey.currentState!.validate()) {
             bool result = await userCheck();
             if (result) {
-              Utility.getEasyLoading(miliSeconds: 1000, showSate: EasyLoadingShowState.showDefault, expression: '');
+              clearTextField();
+              Utility.getEasyLoading(miliSeconds: 750, showSate: EasyLoadingShowState.showDefault, expression: '');
               Navigator.pushReplacementNamed(context, '/home');
             } else {
               Utility.getEasyLoading(
@@ -179,5 +180,10 @@ class _EntryViewState extends State<EntryView> {
   Future<bool> userCheck() async {
     bool result = await entryViewModel.login(_controllerUserName.text, _controllerPassword.text);
     return result;
+  }
+
+  clearTextField() {
+    _controllerPassword.text = '';
+    _controllerUserName.text = '';
   }
 }

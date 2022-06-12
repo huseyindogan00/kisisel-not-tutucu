@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:to_do_app/model/job.dart';
 import 'package:to_do_app/model/page_enum.dart';
 import 'package:to_do_app/service/utility.dart';
-import 'package:to_do_app/view/job_insert_view.dart';
-import 'package:to_do_app/view/route_generator.dart';
 import 'package:to_do_app/view_model/home_view_model.dart';
 import 'package:to_do_app/view_model/job_detail_model.dart';
 
@@ -111,16 +109,14 @@ class _HomeViewState extends State<HomeView> with Utility {
             content: Text('Çıkmak istediğinizden eminmisiniz?'),
             actions: [
               TextButton(
-                  onPressed: () {
-                    exit(0);
+                  onPressed: () async {
+                    bool result = await Navigator.of(context).maybePop();
+                    if (result) {
+                      Navigator.pushReplacementNamed(context, '/');
+                    }
                   },
                   child: Text('Evet')),
-              TextButton(
-                  onPressed: () {
-                    var result = Navigator.of(context).maybePop();
-                    result.then((value) => print(value.toString()));
-                  },
-                  child: Text('Hayır'))
+              TextButton(onPressed: () {}, child: Text('Hayır'))
             ],
           );
         });
