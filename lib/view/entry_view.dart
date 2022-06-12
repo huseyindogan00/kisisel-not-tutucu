@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors,prefer_const_literals_to_create_immutables, prefer_final_fields
 import 'package:flutter/material.dart';
 import 'package:to_do_app/model/user.dart';
+import 'package:to_do_app/service/session.dart';
 import 'package:to_do_app/service/utility.dart';
 import 'package:to_do_app/view_model/entry_view_model.dart';
 import '../model/easyloadin_show_state.dart';
@@ -13,6 +14,7 @@ var formKey = GlobalKey<FormState>();
 
 class EntryView extends StatefulWidget {
   const EntryView({Key? key}) : super(key: key);
+
   @override
   State<EntryView> createState() => _EntryViewState();
 }
@@ -20,12 +22,18 @@ class EntryView extends StatefulWidget {
 class _EntryViewState extends State<EntryView> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+  }
+
+  initSession() {
+    if (Session.session) {
+      Navigator.pushReplacementNamed(context, '/home');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    initSession();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -163,6 +171,7 @@ class _EntryViewState extends State<EntryView> {
             if (result) {
               clearTextField();
               Utility.getEasyLoading(miliSeconds: 750, showSate: EasyLoadingShowState.showDefault, expression: '');
+              Session;
               Navigator.pushReplacementNamed(context, '/home');
             } else {
               Utility.getEasyLoading(

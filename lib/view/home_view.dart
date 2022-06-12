@@ -1,9 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:to_do_app/model/job.dart';
 import 'package:to_do_app/model/page_enum.dart';
+import 'package:to_do_app/service/session.dart';
 import 'package:to_do_app/service/utility.dart';
 import 'package:to_do_app/view_model/home_view_model.dart';
 import 'package:to_do_app/view_model/job_detail_model.dart';
@@ -18,13 +19,16 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> with Utility {
-  //bool isDoneJob = false;
+  Future<SharedPreferences> sharedPreferences = SharedPreferences.getInstance();
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getList();
   }
+
+  void sessionControl() {}
 
   // TÜM LİSTENİN GETİRLMESİ
   void getList() async {
@@ -112,11 +116,16 @@ class _HomeViewState extends State<HomeView> with Utility {
                   onPressed: () async {
                     bool result = await Navigator.of(context).maybePop();
                     if (result) {
+                      Session.session = true;
                       Navigator.pushReplacementNamed(context, '/');
                     }
                   },
                   child: Text('Evet')),
-              TextButton(onPressed: () {}, child: Text('Hayır'))
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Hayır'))
             ],
           );
         });

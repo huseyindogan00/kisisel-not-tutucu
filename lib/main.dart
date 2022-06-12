@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:to_do_app/service/session.dart';
+import 'package:to_do_app/view/home_view.dart';
 import 'package:to_do_app/view/route_generator.dart';
 
 void main() {
@@ -18,6 +20,7 @@ class MainPage extends StatelessWidget {
           backgroundColor: Colors.orangeAccent.shade200,
           appBarTheme: AppBarTheme(backgroundColor: Colors.blue.shade900),
           primaryColor: const Color.fromARGB(255, 46, 68, 44)),
+      darkTheme: ThemeData.dark(),
       builder: EasyLoading.init(),
       color: Colors.deepOrangeAccent.shade400,
       debugShowCheckedModeBanner: false,
