@@ -19,6 +19,8 @@ class RouteGenerator {
   }
 
   static _creatRoute(Widget pageWidget) {
-    return MaterialPageRoute(builder: (context) => pageWidget);
+    return MaterialPageRoute(
+      builder: (context) => pageWidget,
+    );
   }
 }

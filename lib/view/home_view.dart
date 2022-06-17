@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:to_do_app/model/job.dart';
 import 'package:to_do_app/model/page_enum.dart';
-import 'package:to_do_app/service/session.dart';
 import 'package:to_do_app/service/utility.dart';
 import 'package:to_do_app/view_model/home_view_model.dart';
 import 'package:to_do_app/view_model/job_detail_model.dart';
@@ -116,7 +115,6 @@ class _HomeViewState extends State<HomeView> with Utility {
                   onPressed: () async {
                     bool result = await Navigator.of(context).maybePop();
                     if (result) {
-                      Session.session = true;
                       Navigator.pushReplacementNamed(context, '/');
                     }
                   },

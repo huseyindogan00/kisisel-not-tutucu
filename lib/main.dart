@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:to_do_app/service/session.dart';
-import 'package:to_do_app/view/home_view.dart';
 import 'package:to_do_app/view/route_generator.dart';
 
 void main() {
