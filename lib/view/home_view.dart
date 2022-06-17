@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:to_do_app/model/job.dart';
 import 'package:to_do_app/model/page_enum.dart';
 import 'package:to_do_app/service/utility.dart';
@@ -18,11 +17,8 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> with Utility {
-  Future<SharedPreferences> sharedPreferences = SharedPreferences.getInstance();
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getList();
   }
@@ -91,8 +87,9 @@ class _HomeViewState extends State<HomeView> with Utility {
       expandedHeight: 160,
       bottom: PreferredSize(
           child: Text(
-            'YAPILACAKLAR',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, letterSpacing: 3, color: Colors.white),
+            'NOTLARIM',
+            style:
+                TextStyle(fontSize: 22, fontWeight: FontWeight.bold, letterSpacing: 3, color: Colors.orange.shade400),
           ),
           preferredSize: Size.zero),
       flexibleSpace: FlexibleSpaceBar(
